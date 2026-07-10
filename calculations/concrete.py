@@ -1,0 +1,16 @@
+CONCRETE_CLASSES = {
+    "C12/15": {"fck": 12, "fck_cube": 15, "fcm": 20, "fctm": 1.6, "fctk_005": 1.1, "fctk_095": 2.0, "Ecm": 27, "eps_c1": 1.8, "eps_cu1": 3.5, "eps_c2": 2.0, "eps_cu2": 3.5, "n": 2.0, "eps_c3": 1.75, "eps_cu3": 3.5},
+    "C16/20": {"fck": 16, "fck_cube": 20, "fcm": 24, "fctm": 1.9, "fctk_005": 1.3, "fctk_095": 2.5, "Ecm": 29, "eps_c1": 1.9, "eps_cu1": 3.5, "eps_c2": 2.0, "eps_cu2": 3.5, "n": 2.0, "eps_c3": 1.75, "eps_cu3": 3.5},
+    "C20/25": {"fck": 20, "fck_cube": 25, "fcm": 28, "fctm": 2.2, "fctk_005": 1.5, "fctk_095": 2.9, "Ecm": 30, "eps_c1": 2.0, "eps_cu1": 3.5, "eps_c2": 2.0, "eps_cu2": 3.5, "n": 2.0, "eps_c3": 1.75, "eps_cu3": 3.5},
+    "C25/30": {"fck": 25, "fck_cube": 30, "fcm": 33, "fctm": 2.6, "fctk_005": 1.8, "fctk_095": 3.3, "Ecm": 31, "eps_c1": 2.1, "eps_cu1": 3.5, "eps_c2": 2.0, "eps_cu2": 3.5, "n": 2.0, "eps_c3": 1.75, "eps_cu3": 3.5},
+    "C30/37": {"fck": 30, "fck_cube": 37, "fcm": 38, "fctm": 2.9, "fctk_005": 2.0, "fctk_095": 3.8, "Ecm": 33, "eps_c1": 2.2, "eps_cu1": 3.5, "eps_c2": 2.0, "eps_cu2": 3.5, "n": 2.0, "eps_c3": 1.75, "eps_cu3": 3.5},
+    "C35/45": {"fck": 35, "fck_cube": 45, "fcm": 43, "fctm": 3.2, "fctk_005": 2.2, "fctk_095": 4.2, "Ecm": 34, "eps_c1": 2.25, "eps_cu1": 3.5, "eps_c2": 2.0, "eps_cu2": 3.5, "n": 2.0, "eps_c3": 1.75, "eps_cu3": 3.5},
+    "C40/50": {"fck": 40, "fck_cube": 50, "fcm": 48, "fctm": 3.5, "fctk_005": 2.5, "fctk_095": 4.6, "Ecm": 35, "eps_c1": 2.3, "eps_cu1": 3.5, "eps_c2": 2.0, "eps_cu2": 3.5, "n": 2.0, "eps_c3": 1.75, "eps_cu3": 3.5},
+    "C45/55": {"fck": 45, "fck_cube": 55, "fcm": 53, "fctm": 3.8, "fctk_005": 2.7, "fctk_095": 4.9, "Ecm": 36, "eps_c1": 2.4, "eps_cu1": 3.5, "eps_c2": 2.0, "eps_cu2": 3.5, "n": 2.0, "eps_c3": 1.75, "eps_cu3": 3.5},
+    "C50/60": {"fck": 50, "fck_cube": 60, "fcm": 58, "fctm": 4.1, "fctk_005": 2.9, "fctk_095": 5.3, "Ecm": 37, "eps_c1": 2.45, "eps_cu1": 3.5, "eps_c2": 2.0, "eps_cu2": 3.5, "n": 2.0, "eps_c3": 1.75, "eps_cu3": 3.5},
+    "C55/67": {"fck": 55, "fck_cube": 67, "fcm": 63, "fctm": 4.2, "fctk_005": 3.0, "fctk_095": 5.5, "Ecm": 38, "eps_c1": 2.5, "eps_cu1": 3.2, "eps_c2": 2.2, "eps_cu2": 3.1, "n": 1.75, "eps_c3": 1.8, "eps_cu3": 3.1},
+    "C60/75": {"fck": 60, "fck_cube": 75, "fcm": 68, "fctm": 4.4, "fctk_005": 3.1, "fctk_095": 5.7, "Ecm": 39, "eps_c1": 2.6, "eps_cu1": 3.0, "eps_c2": 2.3, "eps_cu2": 2.9, "n": 1.6, "eps_c3": 1.9, "eps_cu3": 2.9},
+    "C70/85": {"fck": 70, "fck_cube": 85, "fcm": 78, "fctm": 4.6, "fctk_005": 3.2, "fctk_095": 6.0, "Ecm": 41, "eps_c1": 2.7, "eps_cu1": 2.8, "eps_c2": 2.4, "eps_cu2": 2.7, "n": 1.45, "eps_c3": 2.0, "eps_cu3": 2.7},
+    "C80/95": {"fck": 80, "fck_cube": 95, "fcm": 88, "fctm": 4.8, "fctk_005": 3.4, "fctk_095": 6.3, "Ecm": 42, "eps_c1": 2.8, "eps_cu1": 2.8, "eps_c2": 2.5, "eps_cu2": 2.6, "n": 1.4, "eps_c3": 2.2, "eps_cu3": 2.6},
+    "C90/105": {"fck": 90, "fck_cube": 105, "fcm": 98, "fctm": 5.0, "fctk_005": 3.5, "fctk_095": 6.6, "Ecm": 44, "eps_c1": 2.8, "eps_cu1": 2.8, "eps_c2": 2.6, "eps_cu2": 2.6, "n": 1.4, "eps_c3": 2.3, "eps_cu3": 2.6},
+}
