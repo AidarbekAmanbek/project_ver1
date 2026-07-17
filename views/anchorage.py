@@ -65,7 +65,7 @@ with st.container(border=True):
     tension_col, compression_col = st.columns(2)
 
     with tension_col:
-        tension_active = st.toggle("Стержни растянуты", value=True, key="tension_active")
+        tension_active = st.toggle("Стержни растянуты", value=False, key="tension_active")
         if tension_active:
             with st.expander("Расчет для растянутых стержней", expanded=True):
                 f_ctk_005 = CONCRETE_CLASSES[concrete]["fctk_005"]
@@ -191,11 +191,11 @@ with st.container(border=True):
 
                 l_bd = calc_lbd(alpha_1, alpha_2, alpha_3, alpha_4, alpha_5, l_brqd, lb_min)
 
-                st.write(f"α1 = {alpha_1}")
-                st.write(f"α2 = {alpha_2}")
-                st.write(f"α3 = {alpha_3}")
-                st.write(f"α4 = {alpha_4}")
-                st.write(f"α5 = {alpha_5}")
+                # st.write(f"α1 = {alpha_1}")
+                # st.write(f"α2 = {alpha_2}")
+                # st.write(f"α3 = {alpha_3}")
+                # st.write(f"α4 = {alpha_4}")
+                # st.write(f"α5 = {alpha_5}")
 
                 st.write("Расчетная длина анкеровки для растянутых стержней по (8.4):")
                 if tension_welded_radio == "да":
@@ -216,7 +216,7 @@ with st.container(border=True):
                 st.write(f"**{l_bd} мм** или **{l_bd:.0f} мм**")
                 
     with compression_col:
-        compression_active = st.toggle("Стержни сжатые", value=True, key="compression_active")
+        compression_active = st.toggle("Стержни сжатые", value=False, key="compression_active")
         if compression_active:
             with st.expander("Расчет для сжатых стержней", expanded=True):
                 
@@ -249,11 +249,14 @@ with st.container(border=True):
 
                 st.write(f"Значения коэффициентов α1, α2, α3, α4 по таблице 8.2")
                 st.write("Форма стержней:")
-                st.write(f"α1 = {alpha_1}")
+                st.latex(fr" \alpha_1 = {alpha_1}")
+
                 st.write("Защитный слой бетона:")
-                st.write(f"α2 = {alpha_2}")
+                st.latex(fr" \alpha_2 = {alpha_2}")
+
                 st.write("Наличие поперечной арматуры, не приваренной к главной арматуре:")
-                st.write(f"α3 = {alpha_3}")
+                st.latex(fr" \alpha_3 = {alpha_3}")
+
                 st.write("Наличие приваренной поперечной арматуры:")
                 compression_welded_radio = st.radio(
                     "Наличие приваренной поперечной арматуры:",
@@ -264,9 +267,11 @@ with st.container(border=True):
                     label_visibility="collapsed"
                 )
                 alpha_4 = calc_alpha_4_compression(compression_welded_radio == "да")
-
-                st.write(f"α4 = {alpha_4}")
-                
+                if compression_welded_radio == "да":
+                    st.latex(fr" \alpha_4 = {alpha_4}")
+                else:
+                    st.latex(fr" \alpha_4 - \text{{не учитывается}}")
+               
 
                 st.write("Расчетная длина анкеровки для сжатых стержней по (8.4)-(8.7):")
                 l_bd = calc_lbd(alpha_1, alpha_2, alpha_3, alpha_4, 1.0, l_brqd, lb_min)
@@ -280,11 +285,5 @@ with st.container(border=True):
 
 
 
-
-
-
-
-
-
 if st.button("Выполнить рассчитать в табличной форме"):
-    st.write(f"fyk =  МПа")
+    st.write(f"Скоро все будет")
