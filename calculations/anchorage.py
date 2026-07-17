@@ -1,3 +1,5 @@
+from data.rebar import REBAR_TABLE
+
 def calc_l_bqrd(diameter, sigma_sd, f_bd, digits=2):
     l_brqd = (diameter / 4) * (sigma_sd / f_bd) 
     return round(l_brqd, digits)
@@ -17,7 +19,7 @@ def calc_f_bd(f_ctd, bond_condition, diameter, digits=2):
     return round(f_bd, digits), n1, n2
 
 
-def calc_cd(bars_type, a_min=200, c=25, c1=25, digits=2):
+def calc_cd(bars_type, a_min=None, c=None, c1=None, digits=2):
     if bars_type == "straight":
         cd = min(a_min/2, c, c1)
     elif bars_type == "hooked":
@@ -41,9 +43,16 @@ def calc_lb_min(bars, diameter, l_brqd, digits=0):
     return round(lb_min, digits)
 
 # Значения коэффициентов α1, α2, α3, α4 таблица 8.2 (для сжатых стержней - константы)
-def calc_alphas_compression():
-    alpha_1, alpha_2, alpha_3, alpha_4 = 1.0, 1.0, 1.0, 0.7
-    return alpha_1, alpha_2, alpha_3, alpha_4
+def calc_alpha_123_compression():
+    alpha_1, alpha_2, alpha_3 = 1.0, 1.0, 1.0
+    return alpha_1, alpha_2, alpha_3
+
+def calc_alpha_4_compression(alpha_bool):
+    if alpha_bool:
+        alpha_4 = 0.7
+    else:
+        alpha_4 = 1.0
+    return alpha_4
 
 
 # расчетная длина анкеровки lbd по (8.4), с учетом минимальной lb,min по (8.6)/(8.7)
@@ -53,40 +62,44 @@ def calc_lbd(alpha_1, alpha_2, alpha_3, alpha_4, alpha_5, l_brqd, lb_min, digits
     return round(l_bd, digits)
 
 
-# def calc_alphas_tension(bars, bars_type, diameter, cd, A_st, A_stmin, As, type_const, digits=2):
+# Значения коэффициентов α1, α2, α3 таблица 8.2 для растянутых стержней.
+# α3 упрощённо принята = 1.0 (K·λ = 0, без учёта выгоды от дополнительной поперечной арматуры) - консервативно.
+def calc_alph_12_tension(bars_type, diameter, cd, digits=3):
+    if bars_type == "straight":
+        alpha_1 = 1.0
+        alpha_2_raw = 1.0 - 0.15 * (cd - diameter) / diameter
+    else:
+        alpha_1 = 0.7 if cd > 3 * diameter else 1.0
+        alpha_2_raw = 1.0 - 0.15 * (cd - 3 * diameter) / diameter
 
-#     if type_const == "beam":
-#         A_stmin = 0.25 * As
+    alpha_2 = min(max(alpha_2_raw, 0.7), 1.0)
 
-#     lamda = 1.0
-#     k = 0.0
+    return (
+        round(alpha_1, digits),
+        round(alpha_2, digits),
+        round(alpha_2_raw, digits),
+    )
 
-#     if bars == "tension":
-#         if bars_type == "straight":
-#             alpha_1 = 1.0
-#             alpha_2 = 1.0 - 0.15 * (cd - diameter) / diameter
-#             if alpha_2 < 0.7:
-#                 alpha_2 = 0.7
-#             elif alpha_2 > 1.0:
-#                 alpha_2 = 1.0
-#             alpha_3 = 1.0 - k * lamda
-#         else:
-#             alpha_1 = 0.7 if cd > 3 * diameter else 1.0
-#             alpha_2 = 1.0
-#             alpha_3 = 1.0
+def calc_alph_3_tension(factor_k, diameter, A_st, type_constraction, digits=3):
+    k = factor_k
+    As = REBAR_TABLE[diameter]["area_mm2"]
+    if type_constraction == "beam":
+        A_st_min = 0.25 * As
+    elif type_constraction == "slab":
+        A_st_min = 0
 
-#         alpha_4 = 0.7
-#         alpha_5 = 1.0
+    lambda_1 = (A_st - A_st_min)/As 
 
-#     elif bars == "compression":
-#         alpha_1, alpha_2, alpha_3, alpha_4, alpha_5 = 1.0, 1.0, 1.0, 0.7, 1.0
-#     else:
-#         raise ValueError("bars must be 'tension' or 'compression'")
+    alpha_3 = 1 - k * lambda_1
+    alpha_3 = min(max(alpha_3, 0.7), 1.0)
+    return round(alpha_3, digits)
 
-#     return (
-#         round(alpha_1, digits),
-#         round(alpha_2, digits),
-#         round(alpha_3, digits),
-#         round(alpha_4, digits),
-#         round(alpha_5, digits),
-#     )
+
+def calc_alph_5_tension(p, digits=3):
+    if p == 0:
+        alpha_5 = 1.0
+    else:
+        alpha_5 = 1 - 0.04 * p
+
+    alpha_5 = min(max(alpha_5, 0.7), 1.0)
+    return round(alpha_5, digits)
