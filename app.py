@@ -16,6 +16,7 @@ st.markdown(
 
 pages = [
     st.Page("views/anchorage.py", title="Анкеровка продольной арматуры"),
+    st.Page("views/overlap.py", title="Нахлест арматуры"),
     st.Page("views/cover.py", title="Защитный слой бетона"),
 ]
 
