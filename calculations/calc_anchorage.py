@@ -103,3 +103,7 @@ def calc_alph_5_tension(p, digits=3):
 
     alpha_5 = min(max(alpha_5, 0.7), 1.0)
     return round(alpha_5, digits)
+
+
+
+# Общая формула расчета анкеровки для таблицы.

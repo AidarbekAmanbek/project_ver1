@@ -12,7 +12,8 @@ from calculations.calc_anchorage import (
     calc_lb_min,
     calc_lbd,
 )
-from data.concrete import CONCRETE_CLASSES
+from data.concrete import CONCRETE_CLASSES, CONCRETE_CLASSES_PRECISE
+
 
 
 st.title("Анкеровка продольной арматуры")
@@ -20,6 +21,12 @@ st.caption("СП РК EN 1992-1-1:2004/2011")
 
 concrete_classes = list(CONCRETE_CLASSES)
 concrete = st.selectbox("Класс прочности бетона:", concrete_classes, index=2)
+
+# Одиночная кнопка (по умолчанию выключена) для использования более точных значений
+precision_checkbox = st.checkbox("Определять характеристики бетона по аналитическим зависимостям.", value=False)
+
+concrete_table = CONCRETE_CLASSES_PRECISE if precision_checkbox else CONCRETE_CLASSES
+
 
 f_yk = st.number_input(
     "Характеристический предел текучести арматуры, fyk (МПа):",
@@ -35,6 +42,7 @@ diameter = st.number_input(
     max_value=40,
     key="diameter_c"
 )
+
 
 a_ct = st.number_input(
     "αct - коэффициент, учитывающий влияние длительных процессов на прочность бетона при растяжении",
@@ -53,6 +61,17 @@ radio_button = st.radio(
 )
 bond_condition = "good" if radio_button == "хорошое" else "poor"
 
+report_data = {
+    "concrete": concrete,
+    "precise": precision_checkbox,
+    "f_yk": f_yk,
+    "diameter": diameter,
+    "a_ct": a_ct,
+    "y_c": y_c,
+    "y_s": y_s,
+    "bond_condition_label": radio_button,
+}
+
 with st.expander("Показать схему условий сцепления (рисунок 8.2)"):
     st.image("assets/anchorage/bond_conditions.png")
     st.caption(
@@ -68,7 +87,7 @@ with st.container(border=True):
         tension_active = st.toggle("Стержни растянуты", value=False, key="tension_active")
         if tension_active:
             with st.expander("Расчет для растянутых стержней", expanded=True):
-                f_ctk_005 = CONCRETE_CLASSES[concrete]["fctk_005"]
+                f_ctk_005 = concrete_table[concrete]["fctk_005"]
                 f_ctd = calc_f_ctd(a_ct, f_ctk_005, y_c)
                 f_bd, n1, n2 = calc_f_bd(f_ctd, bond_condition, diameter)
                 f_yd = f_yk / y_s
@@ -219,8 +238,8 @@ with st.container(border=True):
         compression_active = st.toggle("Стержни сжатые", value=False, key="compression_active")
         if compression_active:
             with st.expander("Расчет для сжатых стержней", expanded=True):
-                
-                f_ctk_005 = CONCRETE_CLASSES[concrete]["fctk_005"]
+
+                f_ctk_005 = concrete_table[concrete]["fctk_005"]
                 f_ctd = calc_f_ctd(a_ct, f_ctk_005, y_c)
                 f_bd, n1, n2 = calc_f_bd(f_ctd, bond_condition, diameter)
                 f_yd = f_yk / y_s
@@ -229,7 +248,6 @@ with st.container(border=True):
                 alpha_1, alpha_2, alpha_3 = calc_alpha_123_compression()
                 lb_min = calc_lb_min("compression", diameter, l_brqd)
                 
-
                 st.write("Расчетное сопротивление бетона на растяжение по (3.16):")
                 st.latex(fr"f_{{ctd}} = \dfrac{{\alpha_{{ct}}\cdot f_{{ctk,0.05}}}}{{\gamma_c}} = \dfrac{{{a_ct}\cdot {f_ctk_005}}}{{{y_c}}} = {f_ctd}\ \mathrm{{МПа}}")
 
@@ -272,9 +290,9 @@ with st.container(border=True):
                 else:
                     st.latex(fr" \alpha_4 - \text{{не учитывается}}")
                
-
                 st.write("Расчетная длина анкеровки для сжатых стержней по (8.4)-(8.7):")
                 l_bd = calc_lbd(alpha_1, alpha_2, alpha_3, alpha_4, 1.0, l_brqd, lb_min)
+
                 st.latex(
                     fr"l_{{bd}} = \alpha_1\cdot\alpha_2\cdot\alpha_3\cdot\alpha_4\cdot l_{{b,rqd}}"
                     fr" = {alpha_1}\cdot {alpha_2}\cdot {alpha_3}\cdot {alpha_4}\cdot {l_brqd}\ \mathrm{{мм}}"
@@ -287,3 +305,5 @@ with st.container(border=True):
 
 if st.button("Выполнить рассчитать в табличной форме"):
     st.write(f"Скоро все будет")
+
+

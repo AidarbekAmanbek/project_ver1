@@ -14,10 +14,18 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-pages = [
-    st.Page("views/anchorage.py", title="Анкеровка продольной арматуры"),
-    st.Page("views/overlap.py", title="Нахлест арматуры"),
-    st.Page("views/cover.py", title="Защитный слой бетона"),
-]
+pages = {
+        "Утилиты": [
+        st.Page("views/units.py", title="Единицы измерений"),
+    ],
+    
+    "СП РК EN 1992-1-1": [
+        st.Page("views/anchorage.py", title="Анкеровка продольной арматуры"),
+        st.Page("views/overlap.py", title="Нахлест арматуры"),
+        st.Page("views/cover.py", title="Защитный слой бетона"),
+        st.Page("views/beam_rebar.py", title="Минимальная и максимальная площади арматуры в балке"),
+    ],
+
+}
 
 st.navigation(pages).run()
