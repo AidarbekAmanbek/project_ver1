@@ -52,3 +52,38 @@ def convert(value, from_unit, to_unit, table, digits=6):
     base = value * table[from_unit]
     result = base / table[to_unit]
     return round(result, digits)
+
+
+def interpolate(x, x1, y1, x2, y2, digits=6):
+    if x2 == x1:
+        return round(y1, digits)
+    result = y1 + (x - x1) * (y2 - y1) / (x2 - x1)
+    return round(result, digits)
+
+
+def interpolate_table(x, table, digits=6):
+    keys = sorted(table)
+    if x <= keys[0]:
+        return round(table[keys[0]], digits)
+    if x >= keys[-1]:
+        return round(table[keys[-1]], digits)
+
+    for x1, x2 in zip(keys, keys[1:]):
+        if x1 <= x <= x2:
+            return interpolate(x, x1, table[x1], x2, table[x2], digits)
+
+
+def count_decimal_zeros(value, digits=15):
+    s = f"{abs(value):.{digits}f}"
+    _, frac = s.split(".")
+
+    zeros = 0
+    for ch in frac:
+        if ch == "0":
+            zeros += 1
+        else:
+            break
+    return zeros
+
+
+
