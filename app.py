@@ -26,6 +26,8 @@ pages = {
         st.Page("views/beam_rebar.py", title="Минимальная и максимальная площади арматуры в балке"),
         st.Page("views/creep_coefficient.py", title="Ползучесть и усадка бетона"),
         st.Page("views/punching_shear.py", title="Продавливание"),
+        st.Page("views/sample.py", title="Продавливание +"),
+
     ],
 
 }
