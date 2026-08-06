@@ -7,6 +7,7 @@ from matplotlib.patches import Rectangle, FancyBboxPatch
 from matplotlib.lines import Line2D
 
 from data.rebar import REBAR_TABLE
+from data.concrete import CONCRETE_CLASSES
 
 
 
@@ -105,6 +106,23 @@ def calc_punching_shear_stress(u1, betta, force, d_eff, digits=3):
 
     return round(v_Ed, digits)
 
+def calc_punching_shear_stress_max(c1, c2, force, betta, d_eff, concrete, a_cc, y_c, digits=3):
+    u0 = (c1 + c2) * 2
+    v_Ed0 = (betta * force * 1000) / (u0 * d_eff)
+
+    f_ck = CONCRETE_CLASSES[concrete]["fck"]
+    f_cd = (a_cc * f_ck) / y_c
+    v = 0.6 * (1 - f_ck / 250)
+    V_Rdmax = 0.5 * v * f_cd
+
+    return (
+        round(u0, 1),
+        round(v_Ed0, digits),
+        round(v, digits),
+        round(f_cd, digits),
+        round(V_Rdmax, digits),
+    )
+
 
 # расчетное значение сопротивления продавливанию по (6.47)
 def calc_punching_shear_resistance(d_eff, p_l, f_ck, y_c, c_rdc_coef, k1, sigma_cp=0, digits=3):
@@ -120,7 +138,7 @@ def calc_punching_shear_resistance(d_eff, p_l, f_ck, y_c, c_rdc_coef, k1, sigma_
 
     return (
         round(C_Rdc, digits),
-        round(k, digits),
+        round(k_fact, digits),
         round(V_Rdc, digits),
         round(V_Rdc_min, digits),
         round(max(V_Rdc, V_Rdc_min), digits),
