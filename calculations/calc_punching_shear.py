@@ -1,4 +1,5 @@
 import math
+from math import pi, sin
 
 import streamlit as st
 import matplotlib.pyplot as plt
@@ -56,8 +57,8 @@ def calc_reinforcement_ratio(
         diametr_y,
         spacing_x,
         spacing_y,
-        c2,
         c1,
+        c2,
         d_eff,
         digits=3
     ):
@@ -65,8 +66,8 @@ def calc_reinforcement_ratio(
     As_x = REBAR_TABLE[diametr_x]["area_mm2"]
     As_y = REBAR_TABLE[diametr_y]["area_mm2"]
 
-    b_x = c2 + 6 * d_eff
-    b_y = c1 + 6 * d_eff
+    b_x = c1 + 6 * d_eff
+    b_y = c2 + 6 * d_eff
 
     rebar_x = b_x // spacing_x
     rebar_y = b_y // spacing_y
@@ -88,25 +89,21 @@ def calc_reinforcement_ratio(
         round(p_l, 5),
     )
 
-# максимального напряжения срезающего усилия по (6.33)
-def calc_punching_shear_stress(
-        c2,
-        c1,
-        betta,
-        force,
-        d_eff,
-        digits=3
-    ):
 
-    pi = math.pi
-    u1 = (2 * c2 + 2 * c1) + (2 * pi * 2 * d_eff)
+# контрольный периметр u1 и расчетное значение
+def calc_control_perimeter_u1(c, d_eff, column_type, digits=3):
+    if column_type == "rectangular":
+        u1 = 2 * c[0] + 2 * c[1] + 2 * pi * 2 * d_eff
+    elif column_type == "circular":
+        u1 = 2 * pi * (c / 2 + 2 * d_eff)
+
+    return (round(u1, digits), round(pi, digits),)
+
+# максимального напряжения срезающего усилия по (6.33)
+def calc_punching_shear_stress(u1, betta, force, d_eff, digits=3):
     v_Ed = (betta * force * 1000) / (u1 * d_eff)
 
-    return (
-        round(v_Ed, digits),
-        round(u1),
-        round(pi, digits),
-        )
+    return round(v_Ed, digits)
 
 
 # расчетное значение сопротивления продавливанию по (6.47)
@@ -143,6 +140,7 @@ def calc_delta_v_ed(area_u1, soil_pressure, digits=3):
     delta_v_ed = soil_pressure * (area_u1 / 1e6)
 
     return round(delta_v_ed, digits)
+
 
 
 def capture_punchin_shear_column_circle(c, d_eff):
@@ -228,3 +226,20 @@ def capture_punchin_shear_column_circle(c, d_eff):
 
     st.pyplot(fig, width=600)
 
+# Сопротивление продавливанию плит или фундаментов колонн, имеющих поперечную арматуру
+def calc_punching_shear_resistance_with_rebar(V_Rdc, u1, d_eff, diametr, f_ywd, Sr, alpha, digits=3):
+    Asw = REBAR_TABLE[diametr]["area_mm2"]
+
+    f_ywd_ef = 250 + 0.25 * d_eff
+    if f_ywd_ef > f_ywd:
+        f_ywd_ef = f_ywd
+
+    V_Rdcs = 0.75 * V_Rdc + 1.5 * (d_eff / Sr) * Asw * f_ywd_ef * (1 / (u1 * d_eff)) * sin(math.radians(alpha))
+    return (
+        round(V_Rdcs, digits),
+        round(f_ywd_ef, digits),
+        round(Asw, digits),
+    )
+
+def control_perimert_uout():
+    pass
